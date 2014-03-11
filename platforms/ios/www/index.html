@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.0.css" />
+    <link rel="stylesheet" href="css/jquery.mobile.theme-1.4.0.css" />
+    <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.0.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script type="text/javascript" src="js/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="js/jquery.mobile-1.4.0.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" charset="utf-8" src="datePickerPlugin.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/sha256.jquery.debug.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/jquery.base64.js"></script>
+    <title>情報蒐集</title>
+</head>
+<body style="text-align: center;">
+
+<!-- 主頁  -->
+<div data-role="page" id="page0">
+    <div data-role="header" style="background-color: #fc7878">
+        <h1>情報蒐集APP</h1>
+    </div><!-- /header -->
+    <div data-role="content">
+        <a href="#page1" data-role="button"  data-inline="false" data-theme="c" data-icon="search">情報查詢</a>
+        <a href="#page4" data-role="button"  data-inline="false" data-theme="c" data-icon="search">情報查詢(須驗證)</a>
+        <a href="#page2" data-role="button"  data-inline="false" data-theme="c" data-icon="plus">情報建立</a>
+        <a href="#page3" data-role="button"  data-inline="false" data-theme="c" data-icon="gear">系統設定</a>
+    </div><!-- /content -->
+</div><!-- /page -->
+
+<!-- 情報查詢 page1  -->
+<div data-role="page" id="page1">
+    <div data-role="header">
+        <a href="#page0" data-role="home">Home</a>
+        <h1>情報查詢</h1>
+    </div><!-- /header -->
+    <div data-role="content" id="page1_content">
+        <a href="#" data-role="button" id="page1_btnGet" onclick="page1_QueryData();">查詢</a>
+        <p> </p>
+        <div id="page1_first_content">
+        </div>
+    </div><!-- /content -->
+</div><!-- /page -->
+
+<!-- 情報建立 page2  -->
+<div data-role="page" id="page2">
+    <div data-role="header">
+        <a href="#page0" data-role="home" data-theme="c">Home</a>
+        <h1>情報建立</h1>
+    </div><!-- /header -->
+    <div data-role="content">
+        <form id="page2_form" action="http://192.168.1.109:5000/api/post/" method="post" data-ajax="false" class="ui-body ui-body-a ui-corner-all" enctype="multipart/form-data">
+            <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="page2_txtYear" >年度：</label>
+                    <select name="page2_txtYear" id="page2_txtYear" onclick="listItemSetup('year','page2_txtYear');"></select>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="page2_txtCreateDate">建立日期：</label>
+                    <input type="text" name="page2_txtCreateDate" id="page2_txtCreateDate" readonly onclick="datePicker()" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="page2_txtTarget">情報對象：</label>
+                    <select name="page2_txtTarget" id="page2_txtTarget" onclick="listItemSetup('target','page2_txtTarget');"></select>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="page2_txtCreator">立案者：</label>
+                    <!--<input type="text" name="page2_txtCreator" id="page2_txtCreator" />-->
+                    <select name="page2_txtCreator" id="page2_txtCreator" onclick="listItemSetup('creator','page2_txtCreator');"></select>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="page2_txtClass">情報類別：</label>
+                    <select name="page2_txtClass" id="page2_txtClass" onclick="listItemSetup('class','page2_txtClass');"></select>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="page2_txtField">領域別：</label>
+                    <!--<input type="text" name="page2_txtField" id="page2_txtField" />-->
+                    <select name="page2_txtField" id="page2_txtField" onclick="listItemSetup('field','page2_txtField');"></select>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="page2_txtSubject">主旨：</label>
+                    <input type="text" name="page2_txtSubject" id="page2_txtSubject" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="page2_txtContent">內容：</label>
+                    <input type="text" name="page2_txtContent" id="page2_txtContent" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="page2_txtMemo">備註：</label>
+                    <input type="text" name="page2_txtMemo" id="page2_txtMemo" />
+                </div>
+                <div data-role="fieldcontain" id="page2_fieldcontain">
+                    <a href="#" data-role="button"  data-inline="true" data-theme="e" data-icon="star" onclick="page2_Camera()">照相</a>
+                    <img style="display: none; width: 100px; height: 100px" id="page2_cameraImage" src="">
+                </div>
+                <div data-role="fieldcontain">
+                    <a href="#" data-role="button" id="page2_btnSave" data-theme="b" onclick="page2_Save()">儲存</a>
+                    <!--<a href="#" data-role="button" id="page2_btnCancel" data-theme="b">取消</a>-->
+                </div>
+            </fieldset>
+        </form>
+    </div><!-- /content -->
+</div><!-- /page -->
+
+<!-- 系統設定 page3  -->
+<div data-role="page" id="page3">
+    <div data-role="header">
+        <a href="#page0" data-role="home">Home</a>
+        <h1>系統設定</h1>
+    </div><!-- /header -->
+    <div id="page3_content" data-role="content" style="text-align: left">
+        <a href="#" data-role="button" onclick="updateItemsList('year');updateItemsList('target');updateItemsList('class');updateItemsList('field');updateItemsList('creator')">輸入選項更新</a>
+        <a href="#page32" data-role="button" >登入帳號設定</a>
+        <a href="#" data-role="button" onclick="userCheck()">系統紀錄</a>
+    </div><!-- /content -->
+</div><!-- /page -->
+
+<!-- 系統設定 - 帳號設定 -  page32  -->
+<div data-role="page" id="page32">
+    <div data-role="header">
+        <a href="#page3" data-role="home">Back</a>
+        <h1>系統設定</h1>
+    </div><!-- /header -->
+    <div id="page32_content" data-role="content" style="text-align: left">
+        <form id="page32_form">
+            <fieldset>
+                <div data-role="fieldcontain">
+                    <label for="page32_UserName">帳號名稱：</label>
+                    <input type="text" name="page32_UserName" id="page32_UserName" />
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="page32_Password">帳號密碼：</label>
+                    <input type="text" name="page32_Password" id="page32_Password" />
+                </div>
+                <div data-role="fieldcontain">
+                    <a href="#" data-role="button" id="page32_btnCheckAccount" data-theme="b" onclick="saveUserAccount();">儲存</a>
+                </div>
+            </fieldset>
+        </form>
+    </div><!-- /content -->
+</div><!-- /page -->
+
+<!-- 情報查詢(須驗證)page4  -->
+<div data-role="page" id="page4">
+    <div data-role="header">
+        <a href="#page0" data-role="home">Home</a>
+        <h1>情報查詢</h1>
+    </div><!-- /header -->
+    <div data-role="content" id="page4_content">
+        <a href="#" data-role="button" id="page4_btnGet" onclick="page4_QueryData();">查詢</a>
+        <p> </p>
+        <div id="page4_first_content">
+        </div>
+    </div><!-- /content -->
+</div><!-- /page -->
+
+</body>
+</html>
